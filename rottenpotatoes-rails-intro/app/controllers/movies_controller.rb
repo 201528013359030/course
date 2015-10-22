@@ -10,7 +10,11 @@ class MoviesController < ApplicationController
   end
 
   def index
+<<<<<<< HEAD
     @all_ratings={"G" =>true,"PG"=>true,"PG-13"=>true,"R"=>true}
+=======
+    @all_ratings=["G","PG","PG-13","R"]
+>>>>>>> a51faa20eacffa666950d7a1803dd978551c0980
     if params[:sort]=="title"
       @movies = Movie.all.order("#{params[:sort]}")
       @title_header="hilite"
@@ -22,8 +26,11 @@ class MoviesController < ApplicationController
     end
     if params[:ratings]
       @movies=Movie.where  rating: params[:ratings].keys
+<<<<<<< HEAD
       @all_ratings.each{|key,value| @all_ratings[key]=false}
       params[:ratings].keys.each{|keys|  @all_ratings["#{keys}"]=true}
+=======
+>>>>>>> a51faa20eacffa666950d7a1803dd978551c0980
     end
 
   end
