@@ -10,29 +10,42 @@ class MoviesController < ApplicationController
   end
 
   def index
-<<<<<<< HEAD
-    @all_ratings={"G" =>true,"PG"=>true,"PG-13"=>true,"R"=>true}
-=======
-    @all_ratings=["G","PG","PG-13","R"]
->>>>>>> a51faa20eacffa666950d7a1803dd978551c0980
-    if params[:sort]=="title"
-      @movies = Movie.all.order("#{params[:sort]}")
-      @title_header="hilite"
-     elsif params[:sort]=="release_date"
-      @movies = Movie.all.order("#{params[:sort]}")
-      @release_date_header="hilite"
-     else
+    @all_ratings={"G" => true, "PG" => true, "PG-13" => true, "R" => true}
+
+    session[:sort]=params[:sort] if params.has_key? 'sort'
+    session[:hilite]="hilite" if params.has_key? 'sort'
+
+
+    session[:ratings]=params[:ratings] if params.has_key? 'ratings'
+
+    if session[:sort]=="title"&&!params[:ratings]
+      if session[:ratings]
+        @movies = Movie.all.order("#{session[:sort]}").where rating: session[:ratings].keys
+        @all_ratings.each { |rating, value| @all_ratings[rating]=false }
+        session[:ratings].keys.each { |rating| @all_ratings[rating]=true }
+      else
+        @movies = Movie.all.order("#{session[:sort]}")
+      end
+      @title_header=session[:hilite]
+    elsif session[:sort]=="release_date"&&!params[:ratings]
+      if session[:ratings]
+        @movies = Movie.all.order("#{session[:sort]}").where rating: session[:ratings].keys
+        @all_ratings.each { |rating, value| @all_ratings[rating]=false }
+        session[:ratings].keys.each { |rating| @all_ratings[rating]=true }
+      else
+        @movies = Movie.all.order("#{session[:sort]}")
+      end
+      @release_date_header=session[:hilite]
+    else
       @movies = Movie.all
     end
-    if params[:ratings]
-      @movies=Movie.where  rating: params[:ratings].keys
-<<<<<<< HEAD
-      @all_ratings.each{|key,value| @all_ratings[key]=false}
-      params[:ratings].keys.each{|keys|  @all_ratings["#{keys}"]=true}
-=======
->>>>>>> a51faa20eacffa666950d7a1803dd978551c0980
-    end
 
+    if session[:ratings]&&!params[:sort]
+      @movies=Movie.where rating: session[:ratings].keys
+      @all_ratings.each { |rating, value| @all_ratings[rating]=false }
+      session[:ratings].keys.each { |rating| @all_ratings[rating]=true }
+      session[:hilite]=nil
+    end
   end
 
   def new
